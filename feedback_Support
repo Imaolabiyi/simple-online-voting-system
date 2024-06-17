@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+
+import hashlib
+import json
+import os
+from datetime import datetime
+
+# File to store votes securely
+VOTE_FILE = "votes.json"
+# File to store the audit trail
+AUDIT_TRAIL_FILE = "audit_trail.log"
+# File to store the incident logs
+INCIDENT_LOG_FILE = "incident_log.log"
+# File to store user feedback
+FEEDBACK_FILE = "feedback.json"
+
+class VotingSystem:
+    def __init__(self):
+        self.votes = []
+        self.voting_period_ended = False
+        self.load_votes()
+
+    def load_votes(self):
+        if os.path.exists(VOTE_FILE):
+            with open(VOTE_FILE, 'r') as f:
+                self.votes = json.load(f)
+                # Check if the voting period has ended
+                if self.votes and self.votes[-1].get('finalized'):
+                    self.voting_period_ended = True
+
+    def save_votes(self):
+        with open(VOTE_FILE, 'w') as f:
+            json.dump(self.votes, f)
+
+    def hash_vote(self, vote):
+        vote_str = json.dumps(vote, sort_keys=True)
+        return hashlib.sha256(vote_str.encode('utf-8')).hexdigest()
+
+    def record_vote(self, voter_id, candidate):
+        if self.voting_period_ended:
+            self.display_message("Voting period has ended. No more votes can be recorded.")
+            self.log_incident("Attempted vote after voting period ended", voter_id)
+            return
+
+        if not voter_id or not candidate:
+            self.display_message("Invalid input. Voter ID and candidate are required.")
+            self.log_incident("Invalid vote attempt", voter_id)
+            return
+
+        vote = {
+            'voter_id': voter_id,
+            'candidate': candidate,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        vote_hash = self.hash_vote(vote)
+        vote['hash'] = vote_hash
+
+        self.votes.append(vote)
+        self.save_votes()
+        self.log_audit("Vote recorded", vote)
+        self.display_message(f"Vote recorded for {candidate} by voter {voter_id}.")
+
+    def log_audit(self, action, details):
+        audit_entry = {
+            'action': action,
+            'details': details,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        with open(AUDIT_TRAIL_FILE, 'a') as f:
+            f.write(json.dumps(audit_entry) + '\n')
+
+    def log_incident(self, action, details):
+        incident_entry = {
+            'action': action,
+            'details': details,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        with open(INCIDENT_LOG_FILE, 'a') as f:
+            f.write(json.dumps(incident_entry) + '\n')
+
+    def count_votes(self):
+        count = {}
+        for vote in self.votes:
+            candidate = vote['candidate']
+            if candidate in count:
+                count[candidate] += 1
+            else:
+                count[candidate] = 1
+        self.log_audit("Vote count", count)
+        return count
+
+    def finalize_voting(self):
+        if self.voting_period_ended:
+            self.display_message("Voting period has already ended.")
+            return
+
+        count = self.count_votes()
+        winner = max(count, key=count.get) if count else None
+
+        finalization_record = {
+            'action': 'finalize_voting',
+            'timestamp': datetime.utcnow().isoformat(),
+            'count': count,
+            'winner': winner,
+            'finalized': True
+        }
+        self.votes.append(finalization_record)
+        self.save_votes()
+        self.log_audit("Voting finalized", finalization_record)
+
+        self.voting_period_ended = True
+        self.display_message(f"Voting finalized. Winner: {winner}")
+
+    def audit_trail(self):
+        if os.path.exists(AUDIT_TRAIL_FILE):
+            with open(AUDIT_TRAIL_FILE, 'r') as f:
+                for line in f:
+                    print(json.loads(line))
+
+    def collect_feedback(self, user_id, feedback):
+        feedback_entry = {
+            'user_id': user_id,
+            'feedback': feedback,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        with open(FEEDBACK_FILE, 'a') as f:
+            f.write(json.dumps(feedback_entry) + '\n')
+        self.display_message("Thank you for your feedback.")
+
+    def display_message(self, message):
+        # In a real system, this would be adapted to the user interface being used
+        print(message)
+
+def main():
+    voting_system = VotingSystem()
+
+    # Example usage
+    voting_system.record_vote('voter1', 'candidateA')
+    voting_system.record_vote('voter2', 'candidateB')
+    voting_system.record_vote('voter3', 'candidateA')
+
+    print("Current vote count:")
+    print(voting_system.count_votes())
+
+    # Finalize voting and determine the outcome
+    voting_system.finalize_voting()
+
+    print("\nAudit trail:")
+    voting_system.audit_trail()
+
+    # Collecting feedback
+    voting_system.collect_feedback('voter1', 'The voting process was smooth and easy to use.')
+
+if __name__ == "__main__":
+    main()
+
