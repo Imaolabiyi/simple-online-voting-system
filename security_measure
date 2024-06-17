@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+
+from cryptography.fernet import Fernet
+import requests
+
+# Generate a key for encryption
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+# Simulated database of users (username and encrypted password)
+users_db = {
+    'user1': cipher_suite.encrypt(b'password123'),
+    'user2': cipher_suite.encrypt(b'securepassword'),
+}
+
+# Simulated authentication function
+def authenticate(username, password):
+    if username in users_db:
+        stored_password = cipher_suite.decrypt(users_db[username]).decode('utf-8')
+        if password == stored_password:
+            return True
+    return False
+
+# Simulated voting function (secured by HTTPS)
+def vote(username, option):
+    url = 'https://example.com/vote'
+    data = {'username': username, 'option': option}
+    response = requests.post(url, json=data, verify=True)  # verify=True checks SSL certificate
+    if response.status_code == 200:
+        print("Vote submitted successfully.")
+    else:
+        print("Failed to submit vote. Please try again.")
+
+def main():
+    # Simulated login process
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+
+    if authenticate(username, password):
+        # Simulated voting process
+        option = input("Enter your vote (e.g., Candidate A): ")
+        vote(username, option)
+    else:
+        print("Authentication failed. Invalid username or password.")
+
+if __name__ == "__main__":
+    main()
+
