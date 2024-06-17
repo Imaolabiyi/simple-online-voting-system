@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+
+import hashlib
+import secrets
+
+class Voter:
+    def __init__(self, name, voter_id):
+        self.name = name
+        self.voter_id = voter_id
+
+class Ballot:
+    def __init__(self, election_name, candidates):
+        self.election_name = election_name
+        self.candidates = candidates
+        self.votes = {}
+
+    def add_vote(self, voter_id, candidate_index):
+        if voter_id not in self.votes:
+            self.votes[voter_id] = candidate_index
+            print(f"Vote from {voter_id} recorded successfully.")
+        else:
+            print("Error: This voter has already voted.")
+
+    def count_votes(self):
+        results = {candidate: 0 for candidate in self.candidates}
+        for voter_id, candidate_index in self.votes.items():
+            results[self.candidates[candidate_index]] += 1
+        return results
+
+class Election:
+    def __init__(self, election_name, candidates):
+        self.election_name = election_name
+        self.candidates = candidates
+        self.ballot = Ballot(election_name, candidates)
+        self.voters = {}
+
+    def register_voter(self, name):
+        voter_id = hashlib.sha256(name.encode()).hexdigest()
+        self.voters[voter_id] = Voter(name, voter_id)
+        return voter_id
+
+    def verify_voter(self, voter_id):
+        return voter_id in self.voters
+
+    def conduct_election(self):
+        print(f"Welcome to the {self.election_name} election!")
+        while True:
+            name = input("Enter your full name to register to vote (or type 'exit' to end): ")
+            if name.lower() == 'exit':
+                break
+            voter_id = self.register_voter(name)
+            print(f"Registration successful. Your voter ID is: {voter_id}")
+
+        while True:
+            voter_id = input("Enter your voter ID to vote (or type 'exit' to end): ")
+            if voter_id.lower() == 'exit':
+                break
+            if self.verify_voter(voter_id):
+                print(f"Welcome back, {self.voters[voter_id].name}!")
+                print("Please choose your candidate:")
+                for i, candidate in enumerate(self.candidates):
+                    print(f"{i+1}. {candidate}")
+                try:
+                    candidate_index = int(input("Enter the number of your chosen candidate: ")) - 1
+                    if 0 <= candidate_index < len(self.candidates):
+                        self.ballot.add_vote(voter_id, candidate_index)
+                    else:
+                        print("Invalid candidate number. Please try again.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+            else:
+                print("Invalid voter ID. Please try again.")
+
+    def announce_results(self):
+        print(f"\nElection Results for {self.election_name}:")
+        results = self.ballot.count_votes()
+        for candidate, votes in results.items():
+            print(f"{candidate}: {votes} votes")
+
+def main():
+    # Define election details and candidates
+    election_name = "General Election 2024"
+    candidates = ["Candidate A", "Candidate B", "Candidate C"]
+
+    # Create election instance
+    election = Election(election_name, candidates)
+
+    # Conduct the election
+    election.conduct_election()
+
+    # Announce the results
+    election.announce_results()
+
+if __name__ == "__main__":
+    main()
+
