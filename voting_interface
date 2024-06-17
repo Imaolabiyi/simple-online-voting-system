@@ -1,0 +1,46 @@
+ass VotingInterface:
+    def __init__(self, election_name, options):
+        self.election_name = election_name
+        self.options = options
+
+    def display_interface(self):
+        print(f"--- {self.election_name} Voting Interface ---")
+        for i, option in enumerate(self.options, start=1):
+            print(f"{i}. {option}")
+        print("-------------------------")
+
+    def vote(self, option_index):
+        if 1 <= option_index <= len(self.options):
+            print(f"You have voted for: {self.options[option_index - 1]}")
+        else:
+            print("Invalid option index. Please vote again.")
+
+def main():
+    # Example election setup
+    election_name = "Best Programming Language"
+    options = [
+        "Python",
+        "JavaScript",
+        "Java",
+        "C++",
+        "Ruby",
+    ]
+
+    # Create a voting interface instance
+    voting_interface = VotingInterface(election_name, options)
+
+    # Display the voting interface
+    voting_interface.display_interface()
+
+    # Simulate user interaction (input for simplicity)
+    while True:
+        try:
+            choice = int(input("Enter the number of your chosen option: "))
+            voting_interface.vote(choice)
+            break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+if __name__ == "__main__":
+    main()
+

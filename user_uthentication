@@ -1,0 +1,51 @@
+mport pyotp
+
+# Dummy database to store user data (in a real application, use a proper database)
+user_database = {
+    "alice": {
+        "password": "password123",
+        "otp_secret": pyotp.random_base32()
+    },
+    "bob": {
+        "password": "bobpassword",
+        "otp_secret": pyotp.random_base32()
+    }
+}
+
+def authenticate_user(username, password):
+    if username in user_database and user_database[username]["password"] == password:
+        return True
+    return False
+
+def generate_otp_secret(username):
+    if username in user_database:
+        return user_database[username]["otp_secret"]
+    return None
+
+def verify_otp(username, otp):
+    otp_secret = generate_otp_secret(username)
+    if otp_secret:
+        totp = pyotp.TOTP(otp_secret)
+        return totp.verify(otp)
+    return False
+
+# Example usage:
+username = input("Enter username: ")
+password = input("Enter password: ")
+
+if authenticate_user(username, password):
+    otp_secret = generate_otp_secret(username)
+    if otp_secret:
+        totp = pyotp.TOTP(otp_secret)
+        print("Enter OTP from your authenticator app:", totp.now())
+        otp_input = input("Enter OTP: ")
+
+        if verify_otp(username, otp_input):
+            print("Authentication successful!")
+        else:
+            print("Invalid OTP. Authentication failed.")
+    else:
+        print("User not found or OTP secret not generated.")
+else:
+    print("Invalid username or password. Authentication failed.")
+

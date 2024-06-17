@@ -1,0 +1,45 @@
+ass Ballot:
+    def __init__(self, election_name, options):
+        self.election_name = election_name
+        self.options = options
+
+    def display_ballot(self):
+        print(f"--- {self.election_name} ---")
+        for i, option in enumerate(self.options, start=1):
+            print(f"{i}. {option}")
+        print("-------------------------")
+
+    def vote(self, option_index):
+        if 1 <= option_index <= len(self.options):
+            print(f"You have voted for: {self.options[option_index - 1]}")
+        else:
+            print("Invalid option index. Please vote again.")
+
+def main():
+    # Example ballot creation
+    election_name = "Presidential Election 2024"
+    candidates = [
+        "Candidate A",
+        "Candidate B",
+        "Candidate C",
+        "Candidate D",
+    ]
+
+    # Create a ballot instance
+    ballot = Ballot(election_name, candidates)
+
+    # Display the ballot options
+    ballot.display_ballot()
+
+    # Simulate voting (user input for simplicity)
+    while True:
+        try:
+            choice = int(input("Enter the number of your chosen candidate: "))
+            ballot.vote(choice)
+            break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+if __name__ == "__main__":
+    main()
+
