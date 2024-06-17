@@ -1,4 +1,6 @@
-mport pyotp
+#!/usr/bin/env python3
+
+import pyotp
 
 # Dummy database to store user data (in a real application, use a proper database)
 user_database = {

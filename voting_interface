@@ -1,4 +1,6 @@
-ass VotingInterface:
+#!/usr/bin/env python3
+
+class VotingInterface:
     def __init__(self, election_name, options):
         self.election_name = election_name
         self.options = options
