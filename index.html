@@ -1,3 +1,5 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,23 +17,33 @@
             <h2>About This Project</h2>
             <p>This project allows users to vote on various topics in a simple and secure way.</p>
         </section>
-        <section>
-            <h2>Features</h2>
-            <ul>
-                <li>Secure Voting</li>
-                <li>Real-time Results</li>
-                <li>User Authentication</li>
-            </ul>
+        <section id="loginSection">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
         </section>
-        <section>
-            <h2>Get Started</h2>
-            <p>To start voting, please <a href="#">sign up</a> or <a href="#">log in</a>.</p>
+        <section id="voteSection">
+            <h2>Vote</h2>
+            <form id="voteForm">
+                <input type="radio" name="option" value="option1" required> Option 1<br>
+                <input type="radio" name="option" value="option2" required> Option 2<br>
+                <input type="radio" name="option" value="option3" required> Option 3<br>
+                <button type="submit">Vote</button>
+            </form>
+        </section>
+        <section id="resultsSection">
+            <h2>Results</h2>
+            <div id="results"></div>
         </section>
     </main>
     <footer>
         <p>&copy; 2024 Simple Online Voting Project</p>
     </footer>
     <script src="js/scripts.js"></script>
+    <script src="/socket.io/socket.io.js"></script> <!-- Add this line -->
 </body>
 </html>
 
