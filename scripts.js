@@ -1,14 +1,7 @@
-// scripts.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const socket = io(); // Initialize socket.io
 
-    // Handle real-time vote updates
-    socket.on('voteUpdate', (results) => {
-        updateResults(results);
-    });
-
-    // Update the results section with new data
+    // Function to update the results section with new data
     function updateResults(results) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = ''; // Clear existing results
@@ -20,7 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle user login (example)
+    // Handle real-time vote updates
+    socket.on('voteUpdate', (results) => {
+        updateResults(results);
+    });
+
+    // Handle user login
     const loginForm = document.getElementById('loginForm');
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -44,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             console.log('Logged in successfully:', data);
-            // Redirect or update UI after successful login
+            // You can redirect or update the UI after successful login
         } catch (error) {
             console.error('Login error:', error);
         }

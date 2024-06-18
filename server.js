@@ -16,9 +16,11 @@ mongoose.connect('mongodb://localhost/simple_online_voting', { useNewUrlParser: 
 
 // Middleware
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // Models
 const Vote = require('./models/Vote');
+const User = require('./models/User');
 
 // Routes
 app.use('/api/users', require('./routes/users'));
