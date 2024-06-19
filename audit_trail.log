@@ -30,3 +30,6 @@
 {"action": "Vote recorded", "details": {"voter_id": "voter2", "candidate": "candidateB", "timestamp": "2024-06-19T08:31:43.936069", "hash": "86173868ec238f0695bc18898307506a5466c3d210e7b2438ee910135ee7f317"}, "timestamp": "2024-06-19T08:31:43.940539"}
 {"action": "Vote recorded", "details": {"voter_id": "voter3", "candidate": "candidateA", "timestamp": "2024-06-19T08:31:43.943422", "hash": "6d7785c4cea8237a3fcbcc497c2159f09bd8d416b6c9b81c88cc69b508f70054"}, "timestamp": "2024-06-19T08:31:43.947695"}
 2024-06-19T09:38:16.586928 - Vote recorded for candidate: Candidate A by voter ID: 12345
+{"action": "Vote recorded", "details": {"voter_id": "voter1", "candidate": "candidateA", "timestamp": "2024-06-19T10:03:02.053131", "hash": "3283590af90c1a68e14b362853d5e556de68e65fde33c209290e5d77ffb18b0f"}, "timestamp": "2024-06-19T10:03:02.058282"}
+{"action": "Vote recorded", "details": {"voter_id": "voter2", "candidate": "candidateB", "timestamp": "2024-06-19T10:03:02.064060", "hash": "0410369ff10b47b69bc3c4ac289d04d5b4bdc0c81bb6c2feddc765f07686e345"}, "timestamp": "2024-06-19T10:03:02.071133"}
+{"action": "Vote recorded", "details": {"voter_id": "voter3", "candidate": "candidateA", "timestamp": "2024-06-19T10:03:02.076193", "hash": "bc02bca9b973d06cd54e19518770a108dacc5a742a2839040376d38884986541"}, "timestamp": "2024-06-19T10:03:02.082012"}
