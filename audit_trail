@@ -13,73 +13,34 @@ AUDIT_TRAIL_FILE = "audit_trail.log"
 class VotingSystem:
     def __init__(self):
         self.votes = []
-        self.load_votes()
-
-    def load_votes(self):
-        if os.path.exists(VOTE_FILE):
-            with open(VOTE_FILE, 'r') as f:
-                self.votes = json.load(f)
-
-    def save_votes(self):
-        with open(VOTE_FILE, 'w') as f:
-            json.dump(self.votes, f)
-
-    def hash_vote(self, vote):
-        vote_str = json.dumps(vote, sort_keys=True)
-        return hashlib.sha256(vote_str.encode('utf-8')).hexdigest()
 
     def record_vote(self, voter_id, candidate):
-        vote = {
-            'voter_id': voter_id,
-            'candidate': candidate,
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        vote_hash = self.hash_vote(vote)
-        vote['hash'] = vote_hash
-
+        vote = {'voter_id': voter_id, 'candidate': candidate}
         self.votes.append(vote)
-        self.save_votes()
-        self.log_audit("Vote recorded", vote)
-
-    def log_audit(self, action, details):
-        audit_entry = {
-            'action': action,
-            'details': details,
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        with open(AUDIT_TRAIL_FILE, 'a') as f:
-            f.write(json.dumps(audit_entry) + '\n')
+        print(f"Vote recorded for {candidate} by voter {voter_id}.")
 
     def count_votes(self):
-        count = {}
+        counts = {}
         for vote in self.votes:
-            candidate = vote['candidate']
-            if candidate in count:
-                count[candidate] += 1
+            if 'candidate' in vote:
+                candidate = vote['candidate']
+                if candidate in counts:
+                    counts[candidate] += 1
+                else:
+                    counts[candidate] = 1
             else:
-                count[candidate] = 1
-        self.log_audit("Vote count", count)
-        return count
-
-    def audit_trail(self):
-        if os.path.exists(AUDIT_TRAIL_FILE):
-            with open(AUDIT_TRAIL_FILE, 'r') as f:
-                for line in f:
-                    print(json.loads(line))
+                print(f"Invalid vote record: {vote}")  # Debugging output
+        return counts
 
 def main():
     voting_system = VotingSystem()
-
-    # Example usage
     voting_system.record_vote('voter1', 'candidateA')
     voting_system.record_vote('voter2', 'candidateB')
     voting_system.record_vote('voter3', 'candidateA')
 
+    print("Stored votes:", voting_system.votes)  # Debugging output
     print("Current vote count:")
     print(voting_system.count_votes())
-
-    print("\nAudit trail:")
-    voting_system.audit_trail()
 
 if __name__ == "__main__":
     main()

@@ -1,80 +1,56 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const socket = io(); // Initialize socket.io
+// scripts.js
 
-    // Function to update the results section with new data
-    function updateResults(results) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = ''; // Clear existing results
-
-        results.forEach(result => {
-            const resultItem = document.createElement('div');
-            resultItem.textContent = `${result._id}: ${result.count}`;
-            resultsDiv.appendChild(resultItem);
-        });
-    }
-
-    // Handle real-time vote updates
-    socket.on('voteUpdate', (results) => {
-        updateResults(results);
-    });
-
-    // Handle user login
+document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(loginForm);
-        const username = formData.get('username');
-        const password = formData.get('password');
-
-        try {
-            const response = await fetch('/api/users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
-
-            const data = await response.json();
-            console.log('Logged in successfully:', data);
-            // You can redirect or update the UI after successful login
-        } catch (error) {
-            console.error('Login error:', error);
-        }
-    });
-
-    // Handle voting
     const voteForm = document.getElementById('voteForm');
-    voteForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const resultsSection = document.getElementById('results');
+
+    loginForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the form from submitting
+
+        // Simulate form submission
+        const username = loginForm.username.value;
+        const password = loginForm.password.value;
         
-        const formData = new FormData(voteForm);
-        const option = formData.get('option');
-
-        try {
-            const response = await fetch('/api/votes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ option }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Voting failed');
-            }
-
-            const data = await response.json();
-            console.log('Voted successfully:', data);
-            // The results will be updated automatically via the WebSocket
-        } catch (error) {
-            console.error('Voting error:', error);
-        }
+        // Placeholder for actual login logic
+        console.log(`Username: ${username}, Password: ${password}`);
+        alert('Simulated login! Replace this with actual login logic.');
+        
+        // Clear the form fields
+        loginForm.reset();
     });
+
+    voteForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the form from submitting
+        
+        // Simulate form submission
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        
+        if (!selectedOption) {
+            alert('Please select an option before voting.');
+            return;
+        }
+        
+        // Placeholder for actual voting logic
+        const optionValue = selectedOption.value;
+        console.log(`Voted for: ${optionValue}`);
+        alert(`Voted for: ${optionValue}. Replace this with actual voting logic.`);
+        
+        // Clear the form selection
+        voteForm.reset();
+        
+        // Update results (simulate updated results)
+        updateResults();
+    });
+
+    function updateResults() {
+        // Placeholder for updating results section
+        const results = `
+            <p>Option 1: 30%</p>
+            <p>Option 2: 40%</p>
+            <p>Option 3: 30%</p>
+        `;
+        resultsSection.innerHTML = results;
+    }
 });
 
