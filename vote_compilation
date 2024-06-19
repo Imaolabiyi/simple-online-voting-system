@@ -10,109 +10,43 @@ VOTE_FILE = "votes.json"
 # File to store the audit trail
 AUDIT_TRAIL_FILE = "audit_trail.log"
 
+# vote_compilation.py
+
 class VotingSystem:
     def __init__(self):
         self.votes = []
-        self.voting_period_ended = False
-        self.load_votes()
 
-    def load_votes(self):
-        if os.path.exists(VOTE_FILE):
-            with open(VOTE_FILE, 'r') as f:
-                self.votes = json.load(f)
-                # Check if the voting period has ended
-                if self.votes and self.votes[-1].get('finalized'):
-                    self.voting_period_ended = True
-
-    def save_votes(self):
-        with open(VOTE_FILE, 'w') as f:
-            json.dump(self.votes, f)
-
-    def hash_vote(self, vote):
-        vote_str = json.dumps(vote, sort_keys=True)
-        return hashlib.sha256(vote_str.encode('utf-8')).hexdigest()
-
-    def record_vote(self, voter_id, candidate):
-        if self.voting_period_ended:
-            print("Voting period has ended. No more votes can be recorded.")
-            return
-
-        vote = {
-            'voter_id': voter_id,
-            'candidate': candidate,
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        vote_hash = self.hash_vote(vote)
-        vote['hash'] = vote_hash
-
-        self.votes.append(vote)
-        self.save_votes()
-        self.log_audit("Vote recorded", vote)
-
-    def log_audit(self, action, details):
-        audit_entry = {
-            'action': action,
-            'details': details,
-            'timestamp': datetime.utcnow().isoformat()
-        }
-        with open(AUDIT_TRAIL_FILE, 'a') as f:
-            f.write(json.dumps(audit_entry) + '\n')
+    def add_vote(self, candidate):
+        self.votes.append({'candidate': candidate})
 
     def count_votes(self):
-        count = {}
+        vote_count = {}
         for vote in self.votes:
-            candidate = vote['candidate']
-            if candidate in count:
-                count[candidate] += 1
+            candidate = vote.get('candidate')  # Use .get() to safely retrieve 'candidate'
+            if candidate in vote_count:
+                vote_count[candidate] += 1
             else:
-                count[candidate] = 1
-        self.log_audit("Vote count", count)
-        return count
-
-    def finalize_voting(self):
-        if self.voting_period_ended:
-            print("Voting period has already ended.")
-            return
-
-        count = self.count_votes()
-        winner = max(count, key=count.get) if count else None
-
-        finalization_record = {
-            'action': 'finalize_voting',
-            'timestamp': datetime.utcnow().isoformat(),
-            'count': count,
-            'winner': winner,
-            'finalized': True
-        }
-        self.votes.append(finalization_record)
-        self.save_votes()
-        self.log_audit("Voting finalized", finalization_record)
-
-        self.voting_period_ended = True
-        print(f"Voting finalized. Winner: {winner}")
-
-    def audit_trail(self):
-        if os.path.exists(AUDIT_TRAIL_FILE):
-            with open(AUDIT_TRAIL_FILE, 'r') as f:
-                for line in f:
-                    print(json.loads(line))
+                vote_count[candidate] = 1
+        return vote_count
 
 def main():
     voting_system = VotingSystem()
 
-    # Example usage
-    voting_system.record_vote('voter1', 'candidateA')
-    voting_system.record_vote('voter2', 'candidateB')
-    voting_system.record_vote('voter3', 'candidateA')
+    # Simulating votes being added (replace with actual input logic as needed)
+    voting_system.add_vote('Candidate A')
+    voting_system.add_vote('Candidate B')
+    voting_system.add_vote('Candidate A')
+    voting_system.add_vote('Candidate C')
+    voting_system.add_vote('Candidate A')
 
-    print("Current vote count:")
-    print(voting_system.count_votes())
-
-    # Finalize voting and determine the outcome
-    voting_system.finalize_voting()
-
-    print("\nAudit trail:")
-    voting_system.audit_trail()
+    # Count and print the current vote count
+    try:
+        vote_count = voting_system.count_votes()
+        print("Current vote count:")
+        for candidate, count in vote_count.items():
+            print(f"{candidate}: {count}")
+    except KeyError as e:
+        print(f"Error: Missing key {e}")
 
 if __name__ == "__main__":
     main()
