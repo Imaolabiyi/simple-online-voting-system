@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const http = require('http');
 const socketIo = require('socket.io');
+const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -21,10 +22,44 @@ app.use(express.static('public'));
 // Models
 const Vote = require('./models/Vote');
 const User = require('./models/User');
+const Feedback = require('./models/Feedback'); // Add feedback model
 
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/votes', require('./routes/votes'));
+
+// Serve HTML pages
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/vote', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'vote.html'));
+});
+
+app.get('/results', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'results.html'));
+});
+
+app.get('/logout', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'logout.html'));
+});
+
+app.get('/feedback', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'feedback.html'));
+});
+
+// Handle feedback form submission
+app.post('/submit_feedback', async (req, res) => {
+    const { user_id, feedback } = req.body;
+    const newFeedback = new Feedback({ user_id, feedback });
+    await newFeedback.save();
+    res.status(201).json({ success: true, message: 'Feedback submitted' });
+});
 
 // Handle votes and broadcast updates
 app.post('/api/votes', async (req, res) => {
