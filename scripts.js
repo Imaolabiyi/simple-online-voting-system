@@ -1,78 +1,63 @@
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOM fully loaded and parsed');
-
     const signUpForm = document.getElementById('signUpForm');
     const loginForm = document.getElementById('loginForm');
     const voteForm = document.getElementById('voteForm');
     const resultsSection = document.getElementById('results');
+    const logoutButton = document.getElementById('logoutButton');
 
-    if (!signUpForm || !loginForm || !voteForm || !resultsSection) {
-        console.error('One or more elements are missing:', {
-            signUpForm,
-            loginForm,
-            voteForm,
-            resultsSection
+    if (signUpForm) {
+        signUpForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            const newUsername = signUpForm.newUsername.value;
+            const newPassword = signUpForm.newPassword.value;
+
+            // Placeholder for actual sign-up logic
+            console.log(`New User - Username: ${newUsername}, Password: ${newPassword}`);
+            alert('Simulated sign-up! Replace this with actual sign-up logic.');
+
+            // Redirect to login page
+            window.location.href = 'login.html';
         });
-        return;
     }
 
-    signUpForm.addEventListener('submit', function (event) {
-        console.log('Sign-up form submitted');
-        event.preventDefault(); // Prevent the form from submitting
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting
 
-        // Simulate form submission
-        const newUsername = signUpForm.newUsername.value;
-        const newPassword = signUpForm.newPassword.value;
+            const username = loginForm.username.value;
+            const password = loginForm.password.value;
 
-        // Placeholder for actual sign-up logic
-        console.log(`New User - Username: ${newUsername}, Password: ${newPassword}`);
-        alert('Simulated sign-up! Replace this with actual sign-up logic.');
+            // Placeholder for actual login logic
+            console.log(`Username: ${username}, Password: ${password}`);
+            alert('Simulated login! Replace this with actual login logic.');
 
-        // Clear the form fields
-        signUpForm.reset();
-    });
+            // Redirect to voting page
+            window.location.href = 'vote.html';
+        });
+    }
 
-    loginForm.addEventListener('submit', function (event) {
-        console.log('Login form submitted');
-        event.preventDefault(); // Prevent the form from submitting
+    if (voteForm) {
+        voteForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting
 
-        // Simulate form submission
-        const username = loginForm.username.value;
-        const password = loginForm.password.value;
+            const selectedOption = document.querySelector('input[name="option"]:checked');
 
-        // Placeholder for actual login logic
-        console.log(`Username: ${username}, Password: ${password}`);
-        alert('Simulated login! Replace this with actual login logic.');
+            if (!selectedOption) {
+                alert('Please select an option before voting.');
+                return;
+            }
 
-        // Clear the form fields
-        loginForm.reset();
-    });
+            const optionValue = selectedOption.value;
+            console.log(`Voted for: ${optionValue}`);
+            alert(`Voted for: ${optionValue}. Replace this with actual voting logic.`);
 
-    voteForm.addEventListener('submit', function (event) {
-        console.log('Vote form submitted');
-        event.preventDefault(); // Prevent the form from submitting
+            // Redirect to results page
+            window.location.href = 'results.html';
+        });
+    }
 
-        // Simulate form submission
-        const selectedOption = document.querySelector('input[name="option"]:checked');
-
-        if (!selectedOption) {
-            alert('Please select an option before voting.');
-            return;
-        }
-
-        // Placeholder for actual voting logic
-        const optionValue = selectedOption.value;
-        console.log(`Voted for: ${optionValue}`);
-        alert(`Voted for: ${optionValue}. Replace this with actual voting logic.`);
-
-        // Clear the form selection
-        voteForm.reset();
-
-        // Update results (simulate updated results)
-        updateResults();
-    });
-
-    function updateResults() {
+    if (resultsSection) {
         console.log('Updating results');
         // Placeholder for updating results section
         const results = `
@@ -81,6 +66,21 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Option 3: 30%</p>
         `;
         resultsSection.innerHTML = results;
+
+        // Redirect to logout page after viewing results
+        setTimeout(function () {
+            window.location.href = 'logout.html';
+        }, 5000); // Redirect after 5 seconds
+    }
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function () {
+            // Placeholder for actual logout logic
+            alert('Simulated logout! Replace this with actual logout logic.');
+
+            // Redirect to sign-up page
+            window.location.href = 'signup.html';
+        });
     }
 });
 
