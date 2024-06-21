@@ -1,49 +1,37 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Online Voting</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Form Example</title>
+    <script src="scripts.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Simple Online Voting</h1>
-    </header>
-    <main>
-        <section>
-            <h2>About This Project</h2>
-            <p>This project allows users to vote on various topics in a simple and secure way.</p>
-        </section>
-        <section id="loginSection">
-            <h2>Login</h2>
-            <form id="loginForm">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </section>
-        <section id="voteSection">
-            <h2>Vote</h2>
-            <form id="voteForm">
-                <input type="radio" name="option" value="option1" required> Option 1<br>
-                <input type="radio" name="option" value="option2" required> Option 2<br>
-                <input type="radio" name="option" value="option3" required> Option 3<br>
-                <button type="submit">Vote</button>
-            </form>
-        </section>
-        <section id="resultsSection">
-            <h2>Results</h2>
-            <div id="results"></div>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Simple Online Voting Project</p>
-    </footer>
-    <script src="js/scripts.js"></script>
-    <script src="/socket.io/socket.io.js"></script> <!-- Add this line -->
+    <form id="signUpForm">
+        <h2>Sign Up</h2>
+        <input type="text" name="newUsername" placeholder="Username" required>
+        <input type="password" name="newPassword" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <form id="loginForm">
+        <h2>Login</h2>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <form id="voteForm">
+        <h2>Vote</h2>
+        <input type="radio" name="option" value="1"> Option 1<br>
+        <input type="radio" name="option" value="2"> Option 2<br>
+        <input type="radio" name="option" value="3"> Option 3<br>
+        <button type="submit">Vote</button>
+    </form>
+
+    <section id="results">
+        <h2>Results</h2>
+    </section>
 </body>
 </html>
 
